@@ -5,10 +5,10 @@ import {
     Switch
 } from 'react-router-dom';
 
-import ExtendRoute from './extendRoute';
-import NotFound from '../components/pages/notFound';
-import Main from '../components/main';
-import TodoItems from '../components/todoList/todoItems';
+import ExtendRoute from 'Routes/extendRoute';
+import NotFound from 'Components/pages/notFound';
+import Main from 'Components/main';
+import TodoItems from 'Components/todoList/todoItems';
 
 //路由配置
 const routes = [

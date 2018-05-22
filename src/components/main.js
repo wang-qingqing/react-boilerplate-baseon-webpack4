@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import '../../mock/mockdata.js';
+import 'Mock/mockdata.js';
 
 export default class Main extends  React.Component{
     testMockData(){
