@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import 'antd/dist/antd.css';
 import MainRoute from 'Routes/mainRoute';
 
-export default class App extends React.Component{
-  render(){
+export default class App extends React.Component {
+  render() {
     return (
       <div>
-           <MainRoute />
+        <MainRoute />
       </div>
     )
   }
