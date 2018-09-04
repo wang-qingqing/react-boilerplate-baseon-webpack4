@@ -18,6 +18,24 @@ const glob = require('glob');
 //     return map;
 // })();
 
+// 获取指定路径下的入口文件
+// function getEntries(globPath) {
+//     let files = glob.sync(globPath),
+//         entries = {};
+
+//     files.forEach(function(filepath) {
+//         // 取倒数第二层(view下面的文件夹)做包名
+//         if(filepath.match(/\.js$/)){
+//             let split = filepath.split('/');
+//             let fileName = split[split.length - 1];
+//             let name = fileName.substring(0, fileName.length - 3);
+//             entries[name] = './' + filepath;
+//         }
+//     });
+
+//     return entries;
+// }
+
 //页面的设置
 // var htmlPages = (function() {
 // 	var artDir = path.resolve(__dirname, 'src/views');
@@ -53,7 +71,6 @@ module.exports = {
     },
     //entry: entries(),//多入口可以如此设置，单入口则可省略（默认是/src/index.js）
     output: {
-        //publicPath: '/', //表示资源的发布地址，当配置过该属性后，打包文件中所有通过相对路径引用的资源都会被配置的路径所替换。
         filename:'[name]-[hash].js'
     },
     devtool: env === 'production' ? false : 'cheap-module-eval-source-map',
@@ -119,15 +136,20 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['dist']), //在打包前清空 dist 目录
+
         new HtmlWebPackPlugin({
             template: "./src/views/index.html",
             filename: "./index.html", // 生成的html存放路径，相对于 path
-            hash: true // 为静态资源生成hash值
+            hash: true, // 为静态资源生成hash值
+            chunks: ['index'], //添加引入的js,也就是entry中的key
+            title: 'index' // 可以给模板设置变量名，在html模板中调用 htmlWebpackPlugin.options.title 可以使用
         }),
         new HtmlWebPackPlugin({
             template: "./src/views/entry.html",
             filename: "./entry.html", // 生成的html存放路径，相对于 path
-            hash: true // 为静态资源生成hash值
+            hash: true, // 为静态资源生成hash值
+            chunks: ['entry'], //添加引入的js,也就是entry中的key
+            title: 'entry'
         }),
         new MiniCssExtractPlugin({
             filename: "[name].[chunkhash:8].css",

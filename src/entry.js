@@ -6,7 +6,7 @@ export default class Entry extends React.Component{
   render(){
     return (
       <div>
-           Entry
+            Entry
       </div>
     )
   }
