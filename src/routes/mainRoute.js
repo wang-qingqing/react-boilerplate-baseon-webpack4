@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import ExtendRoute from 'Routes/extendRoute';
-import NotFound from 'Components/pages/notFound';
+import NotFound from 'Components/common/notFound';
 import Main from 'Components/main';
 import TodoItems from 'Components/todoList/todoItems';
 

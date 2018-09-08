@@ -28,7 +28,7 @@
     +-- dist      生产环境打包后输出的文件
     +-- src       源文件
     |   +-- components   组件
-        |   +-- pages     公用组件
+        |   +-- common     公用组件
             |   +-- notFound.js   404组件
 
         |   +-- todoList  待办事项
@@ -43,6 +43,12 @@
     |   +-- images    图片
         |   +-- peppa.jpg
 
+    |   +-- pages    页面入口
+        |   +-- index.html   页面1
+        |   +-- index.js     入口1
+        |   +-- entry.html   页面2
+        |   +-- entry.js     入口2
+
     |   +-- routes    路由
         |   +-- extendRoute.js   子组件路由
         |   +-- mainRoute.js     主路由
@@ -53,9 +59,6 @@
 
     |   +-- style   样式
         |   +-- index.scss
-
-    |   +-- index.html   主页面
-    |   +-- index.js     入口
 
     +-- package.json         项目配置
     +-- webpack.config.js    webpack的配置文件

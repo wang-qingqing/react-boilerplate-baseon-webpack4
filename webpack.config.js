@@ -4,72 +4,49 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const env = process.env.NODE_ENV;
 const path = require('path');  
 const glob = require('glob');
-
-// 获取入口文件
-// var entries = (function() {
-//     var jsDir = path.resolve(__dirname, 'src/static/js/services');
-//     var entryFiles = glob.sync(jsDir + '/*.js');
-//     var map = {};
-
-//     entryFiles.forEach(function(filePath) {
-//         var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'));
-//         map[filename] = filePath;
-//     });
-//     return map;
-// })();
+const htmlPathPrefix = './src/pages';//html放置的路径前缀
 
 // 获取指定路径下的入口文件
-// function getEntries(globPath) {
-//     let files = glob.sync(globPath),
-//         entries = {};
+function getEntries(globPath) {
+    let files = glob.sync(globPath),//同步获取指定文件
+        entries = {};
 
-//     files.forEach(function(filepath) {
-//         // 取倒数第二层(view下面的文件夹)做包名
-//         if(filepath.match(/\.js$/)){
-//             let split = filepath.split('/');
-//             let fileName = split[split.length - 1];
-//             let name = fileName.substring(0, fileName.length - 3);
-//             entries[name] = './' + filepath;
-//         }
-//     });
+    files.forEach(function(filePath) { 
+        // 取倒数第二层(pages下面的文件夹)做包名
+        if(filePath.match(/\.js$/)){
+            let split = filePath.split('/');
+            let fileName = split[split.length - 1];
+            let name = fileName.substring(0, fileName.length - 3);
+            entries[name] = './' + filePath;
+        }
+    });
 
-//     return entries;
-// }
+    return entries;
+}
 
 //页面的设置
-// var htmlPages = (function() {
-// 	var artDir = path.resolve(__dirname, 'src/views');
-// 	var artFiles = glob.sync(artDir + '/*.art');
-// 	var array = [];
+var htmlPages = (function () {
+    let files = glob.sync(htmlPathPrefix + '/*.html'),
+        configArray = [];
 
-// 	artFiles.forEach(function(filePath) {
-// 		var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'));
+    files.forEach(function(filePath) {
+        if(filePath.match(/\.html$/)){
+            let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'));
+            configArray.push(new HtmlWebPackPlugin({
+                template: htmlPathPrefix + "/" +filename + ".html",
+                filename: filename + '.html', // 生成的html存放路径，相对于 path
+                hash: true, // 为静态资源生成hash值
+                chunks: [filename], //添加引入的js,也就是entry中的key
+                title: filename // 可以给模板设置变量名，在html模板中调用 htmlWebpackPlugin.options.title 可以使用
+            }))
+        }
+    });
 
-// 		array.push(new HtmlWebpackPlugin({
-// 			template: path.resolve(__dirname, 'src/template/index.html'),
-// 			filename: filename + '.html',
-// 			chunks: ['vendor', 'main', filename],
-// 			chunksSortMode: function(chunk1, chunk2) {
-// 				var order =  ['vendor', 'main', filename];
-// 				var order1 = order.indexOf(chunk1.names[0]);
-// 				var order2 = order.indexOf(chunk2.names[0]);
-// 				return order1 - order2;
-// 			},
-// 			minify: {
-// 				removeComments: env === 'production' ? true : false,
-// 				collapseWhitespace: env === 'production' ? true : false
-// 			}
-// 		}));
-// 	});
-// 	return array;
-// })();
+    return configArray;  
+})();
 
 module.exports = {
-    entry: {
-        index: './src/index.js',
-        entry: './src/entry.js',
-    },
-    //entry: entries(),//多入口可以如此设置，单入口则可省略（默认是/src/index.js）
+    entry: getEntries(htmlPathPrefix + '/*.js'),//多入口可以如此设置，单入口则可省略（默认是/src/index.js）
     output: {
         filename:'[name]-[hash].js'
     },
@@ -137,20 +114,8 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(['dist']), //在打包前清空 dist 目录
 
-        new HtmlWebPackPlugin({
-            template: "./src/views/index.html",
-            filename: "./index.html", // 生成的html存放路径，相对于 path
-            hash: true, // 为静态资源生成hash值
-            chunks: ['index'], //添加引入的js,也就是entry中的key
-            title: 'index' // 可以给模板设置变量名，在html模板中调用 htmlWebpackPlugin.options.title 可以使用
-        }),
-        new HtmlWebPackPlugin({
-            template: "./src/views/entry.html",
-            filename: "./entry.html", // 生成的html存放路径，相对于 path
-            hash: true, // 为静态资源生成hash值
-            chunks: ['entry'], //添加引入的js,也就是entry中的key
-            title: 'entry'
-        }),
+        ...htmlPages,//html页面
+       
         new MiniCssExtractPlugin({
             filename: "[name].[chunkhash:8].css",
             chunkFilename: "[id].[chunkhash:8].css"
@@ -167,6 +132,7 @@ module.exports = {
             Mock: path.resolve(__dirname, 'mock'),
             Components: path.resolve(__dirname, 'src/components'),
             Helper: path.resolve(__dirname, 'src/helper'),
+            Pages: path.resolve(__dirname, 'src/pages'),       
             Routes: path.resolve(__dirname,'src/routes'),
             Store: path.resolve(__dirname,'src/store'),
             Style: path.resolve(__dirname, 'src/style')

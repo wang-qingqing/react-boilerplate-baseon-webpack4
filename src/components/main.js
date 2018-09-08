@@ -26,7 +26,7 @@ export default class Main extends  React.Component{
                     <a href="/todo">待办事项</a>
                 </div>
                 <div style={{paddingLeft: '20px',paddingTop: '20px'}}>
-                    <a onClick={this.testMockData}>使用mock模拟接口数据</a>
+                    <a onClick={this.testMockData}>使用mock模拟接口数据(返回结果看console)</a>
                 </div>
             </div>
         )
